@@ -3,6 +3,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import DashboardHome from './pages/DashboardHome';
+import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -15,14 +17,17 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route 
-            path="/dashboard" 
+            path="/" 
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             } 
-          />
-          <Route path="/" element={<Navigate to="/login" />} />
+          >
+            <Route index element={<Navigate to="/dashboard" />} />
+            <Route path="dashboard" element={<DashboardHome />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </Router>

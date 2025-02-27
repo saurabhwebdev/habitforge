@@ -1,6 +1,11 @@
-import { Layout, Menu, Button, Typography } from 'antd';
+import { Layout, Menu, Button, Typography, Avatar, Dropdown } from 'antd';
+import { 
+  UserOutlined, 
+  LogoutOutlined,
+  DashboardOutlined
+} from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, Outlet } from 'react-router-dom';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -18,30 +23,69 @@ export default function Dashboard() {
     }
   };
 
+  const userMenu = [
+    {
+      key: 'profile',
+      label: <Link to="/profile">Profile</Link>,
+      icon: <UserOutlined />,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'logout',
+      label: 'Logout',
+      icon: <LogoutOutlined />,
+      onClick: handleLogout,
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
+        padding: '0 24px',
+        background: '#fff',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        display: 'flex',
         alignItems: 'center',
-        padding: '0 24px'
+        justifyContent: 'space-between'
       }}>
-        <div style={{ color: 'white' }}>
-          <Title level={4} style={{ color: 'white', margin: 0 }}>Dashboard</Title>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Title level={3} style={{ margin: 0, marginRight: '48px' }}>
+            HabitForge
+          </Title>
+          <Menu 
+            mode="horizontal" 
+            defaultSelectedKeys={['dashboard']}
+            style={{ border: 'none', flex: 1 }}
+          >
+            <Menu.Item key="dashboard" icon={<DashboardOutlined />}>
+              <Link to="/dashboard">Dashboard</Link>
+            </Menu.Item>
+            {/* Add more menu items here */}
+          </Menu>
         </div>
-        <div>
-          <span style={{ color: 'white', marginRight: '16px' }}>
-            {currentUser?.email}
-          </span>
-          <Button onClick={handleLogout} type="primary" danger>
-            Logout
-          </Button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <Dropdown 
+            menu={{ items: userMenu }} 
+            trigger={['click']}
+            placement="bottomRight"
+          >
+            <Button type="text" style={{ height: '64px', padding: '0 12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Avatar 
+                  size="small" 
+                  icon={<UserOutlined />} 
+                  src={currentUser?.photoURL}
+                />
+                <span>{currentUser?.displayName || currentUser?.email}</span>
+              </div>
+            </Button>
+          </Dropdown>
         </div>
       </Header>
       <Content style={{ padding: '24px' }}>
-        <Title level={2}>Welcome to your Dashboard!</Title>
-        <p>You are now logged in with {currentUser?.email}</p>
-        {/* Add your dashboard content here */}
+        <Outlet />
       </Content>
     </Layout>
   );
